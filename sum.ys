@@ -1,0 +1,51 @@
+
+# A Y86 assembly code program that computes a given summation and stores the results in an array to be printed at the end
+# of the program. The upper value of n is hardcoded to 10, but can be switch manually if needed.
+# Maggie McComas
+
+.pos 0x0
+    irmovl          $0,         %ecx        # n = 0
+    irmovl          $0,         %edx        # offset of array
+
+mainloop:
+    irmovl          $-7,        %ebx        # sum = -7
+    irmovl          $0,         %edi        # i = 0
+    irmovl          $0,         %esi        # j = 0
+    rrmovl          %edx,       %esp        # %esp = %edx
+    irmovl          arr,        %eax        # %eax = base of arr
+    addl            %eax,       %esp        # %esp = base + offset
+
+outloop:
+    irmovl          $10,        %eax        # get ready to subtract 10 from sum
+    subl            %eax,       %ebx        # sum = sum - 10
+
+inloop:
+    irmovl          $7,         %eax        # get ready to ass 7 to sum
+    addl            %eax,       %ebx        # sum = sum + 7
+    irmovl          $1,         %eax        # get ready to increment j by 1
+    addl            %eax,       %esi        # j++
+    rrmovl          %edi,       %eax        # eax = value of i 
+    subl            %esi,       %eax        # eax = %eax - %esi
+    jg              inloop                  # while (j < i)
+    
+    irmovl          $1,         %eax        # get ready to increment j by 1
+    addl            %eax,       %edi        # i++
+    irmovl          $0,         %esi        # j = 0
+    rrmovl          %ecx,       %eax        # eax = value of n
+    subl            %edi,       %eax        # eax = %eax - %edi
+    jge             outloop                 # while (i <= n)
+
+    rmmovl          %ebx,       (%esp)      # arr[n] = sum
+    irmovl          $4,         %eax        # get ready to compute next addr in arr
+    addl            %eax,       %edx        # offset increased by 4 bytes
+    irmovl          $1,         %eax        # get ready to increment n by 1
+    addl            %eax,       %ecx        # n++
+    irmovl          $11,        %eax        # end loop value
+    subl            %ecx,       %eax        # %eax = %eax - %ecx
+    jg              mainloop                # while (n < 11)
+    
+    halt
+
+.align 4
+arr:
+
